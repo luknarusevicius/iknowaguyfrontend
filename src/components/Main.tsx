@@ -38,8 +38,8 @@ export default function Main() {
 
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="price">SKU</Label>
-              <Input id="proce" placeholder="Price of a product" />
+              <Label htmlFor="price">Price</Label>
+              <Input id="price" placeholder="Price of a product" />
             </div>
           </div>
         </form>
