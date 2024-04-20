@@ -1,4 +1,4 @@
-import { useAppContext } from "../context/context";
+import { AppActionType, useAppContext } from "../context/context";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -8,9 +8,38 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { Checkbox } from "./ui/checkbox";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
 
 export default function VendorList() {
-  const { vendors } = useAppContext();
+  const { dispatch, vendors } = useAppContext();
+
+  const selectVendor = (index: number) => {
+    dispatch({
+      type: AppActionType.SET_STATE,
+      state: {
+        vendors: vendors.map((vendor, i) => {
+          if (i === index) {
+            return { ...vendor, selected: !vendor.selected };
+          }
+          return vendor;
+        }),
+      },
+    });
+  };
+
+  const initiateAgents = () => {
+    const selectedVendors = vendors.filter((vendor) => vendor.selected);
+
+    console.log("Selected Vendors", selectedVendors);
+  };
 
   return (
     <Card className="w-full">
@@ -23,31 +52,39 @@ export default function VendorList() {
       </CardHeader>
       <CardContent>
         {vendors.length > 0 && (
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Link</th>
-                <th>Price</th>
-                <th>Rating</th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table className="w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead></TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Link</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Rating</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {vendors.map((vendor, index) => (
-                <tr key={index}>
-                  <td>{vendor.name}</td>
-                  <td>{vendor.link}</td>
-                  <td>{vendor.price}</td>
-                  <td>{vendor.googleRating}</td>
-                </tr>
+                <TableRow key={index}>
+                  <TableCell>
+                    <Checkbox
+                      id="selected"
+                      checked={vendor.selected}
+                      onCheckedChange={() => selectVendor(index)}
+                    />
+                  </TableCell>
+                  <TableCell>{vendor.name}</TableCell>
+                  <TableCell>{vendor.link}</TableCell>
+                  <TableCell>{vendor.price}</TableCell>
+                  <TableCell>{vendor.googleRating}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         )}
       </CardContent>
       <CardFooter className="flex justify-end">
         {/* <Button variant="outline">Start</Button> */}
-        <Button>I Know A Guy</Button>
+        <Button onClick={initiateAgents}>I Know A Guy</Button>
       </CardFooter>
     </Card>
   );

@@ -7,14 +7,24 @@ import {
   useContext,
   useReducer,
 } from "react";
+import { Sku } from "../models/sku";
 import { Vendor } from "../models/vendor";
 
 interface AppState {
   vendors: Vendor[];
+  skus: Sku[];
 }
 
 const initialState: AppState = {
   vendors: [],
+  skus: [
+    {
+      sku: "example-sku",
+      quantity: 1,
+      price: 0,
+      date: new Date(),
+    },
+  ],
 };
 
 export enum AppActionType {

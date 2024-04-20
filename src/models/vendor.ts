@@ -6,4 +6,5 @@ export interface Vendor {
   phoneNumber: string;
   shipByDate: string;
   googleRating: number;
+  selected?: boolean;
 }

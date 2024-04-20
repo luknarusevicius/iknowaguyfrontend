@@ -1,3 +1,4 @@
+import { Plus, X } from "lucide-react";
 import { AppActionType, useAppContext } from "../context/context";
 import { Button } from "./ui/button";
 import {
@@ -9,10 +10,17 @@ import {
   CardTitle,
 } from "./ui/card";
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
 
 export default function SkuSearch() {
-  const { dispatch } = useAppContext();
+  const { dispatch, skus } = useAppContext();
 
   const find = () => {
     dispatch({
@@ -51,6 +59,52 @@ export default function SkuSearch() {
     });
   };
 
+  const addRow = () => {
+    dispatch({
+      type: AppActionType.SET_STATE,
+      state: {
+        skus: [...skus, { sku: "", quantity: 0, price: 0, date: new Date() }],
+      },
+    });
+  };
+
+  const removeRow = (index: number) => {
+    dispatch({
+      type: AppActionType.SET_STATE,
+      state: {
+        skus: skus.filter((_, i) => i !== index),
+      },
+    });
+  };
+
+  const updateStringValue = (index: number, key: string, value: any) => {
+    dispatch({
+      type: AppActionType.SET_STATE,
+      state: {
+        skus: skus.map((sku, i) => {
+          if (i === index) {
+            return { ...sku, [key]: value };
+          }
+          return sku;
+        }),
+      },
+    });
+  };
+
+  const updateDateValue = (index: number, key: string, value: string) => {
+    dispatch({
+      type: AppActionType.SET_STATE,
+      state: {
+        skus: skus.map((sku, i) => {
+          if (i === index) {
+            return { ...sku, [key]: new Date(value) };
+          }
+          return sku;
+        }),
+      },
+    });
+  };
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -60,40 +114,89 @@ export default function SkuSearch() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="flex flex-col gap-2">
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="sku">SKU</Label>
-              <Input
-                id="sku"
-                placeholder="Stock keeping unit number of a product"
-              />
-            </div>
-          </div>
-
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="quantity">Quantity</Label>
-              <Input id="quantity" placeholder="Quantity of products" />
-            </div>
-          </div>
-
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="price">Previous price you paid</Label>
-              <Input id="price" placeholder="Previous price you paid" />
-            </div>
-          </div>
-
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="date">Date needed by</Label>
-              <Input id="date" placeholder="Date needed by" />
-            </div>
-          </div>
-        </form>
+        {skus.length > 0 && (
+          <Table className="w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead>SKU</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Previous price you paid</TableHead>
+                <TableHead>Date needed by</TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {skus.map((sku, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <Input
+                      id="sku"
+                      placeholder="Stock keeping unit number of a product"
+                      value={sku.sku}
+                      onChange={(e) =>
+                        updateStringValue(index, "sku", e.target.value)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      id="quantity"
+                      placeholder="Quantity of products"
+                      value={sku.quantity}
+                      onChange={(e) =>
+                        updateStringValue(index, "quantity", e.target.value)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      id="price"
+                      placeholder="Previous price you paid"
+                      value={sku.price}
+                      onChange={(e) =>
+                        updateStringValue(index, "price", e.target.value)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      id="date"
+                      type="date"
+                      placeholder="Date needed by"
+                      value={sku.date.toISOString().split("T")[0]}
+                      onChange={(e) =>
+                        updateDateValue(index, "date", e.target.value)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {index > 0 ? (
+                      <Button
+                        onClick={() => removeRow(index)}
+                        variant="outline"
+                      >
+                        <X />
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => removeRow(index)}
+                        variant="outline"
+                        className="invisible"
+                      >
+                        <X />
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </CardContent>
-      <CardFooter className="flex justify-end">
+      <CardFooter className="flex justify-between">
+        <Button onClick={addRow} variant="outline">
+          <Plus />
+        </Button>
         <Button onClick={find}>Find vendors for these items</Button>
       </CardFooter>
     </Card>

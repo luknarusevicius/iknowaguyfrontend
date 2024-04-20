@@ -11,14 +11,14 @@ function App() {
         <header className="App-header">
           <StatusBar />
 
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 p-4">
-            <div className="flex flex-col gap-4">
-              <SkuSearch />
-              <VendorList />
-            </div>
-
+          {/* <div className="grid gap-4 grid-cols-1 md:grid-cols-2 p-4"> */}
+          <div className="flex flex-col gap-4 p-4">
+            <SkuSearch />
+            <VendorList />
             <Eval />
           </div>
+
+          {/* </div> */}
         </header>
       </AppProvider>
     </div>
