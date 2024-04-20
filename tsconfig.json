@@ -22,7 +22,7 @@
   "include": [
     "src",
     "src/components/Eval.tsx",
-    "src/components/Main.tsx",
+    "src/components/SkuSearch.tsx",
     "src/components/StatusBar.tsx"
   ]
 }
